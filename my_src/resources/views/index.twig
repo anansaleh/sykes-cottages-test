@@ -1,0 +1,221 @@
+{% extends 'templates/template.twig' %}
+
+{% block content %}
+  
+  <h3>{{ title }}</h3> 
+  
+  <div class="col-lg-10 col-lg-offset-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">Search Form</div>
+      <div class="panel-body">
+        
+        {#{ //old | json_encode }#}
+
+        <form id="defaultForm" method="post" class="form-horizontal" action="{{ path_for('availability')}}">
+          <div class="form-group {{errors.startdate ? 'has-error' : ''}}">
+            <label class="col-lg-3 control-label">Check-in Date</label>
+            <div class="col-lg-5">  
+                <span class="span-date">YYYY-MM-DD</span>
+                <input type="text" class="form-control" id="startdate" name="startdate" 
+                       placeholder="YYYY-MM-DD" value="{{ old.startdate}}" data-date="{{ old.startdate}}"/>                
+                <!--div class="input-group date" id="checkIn">
+                    <input type="text" class="form-control" name="checkIn" placeholder="MM/DD/YYYY" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div-->
+            </div>
+            {% if errors.startdate %}
+              <span class="help-block">{{ errors.startdate  }}</span>
+            {% endif %}
+          </div>
+          <div class="form-group {{errors.enddate ? 'has-error' : ''}}" >
+            <label class="col-lg-3 control-label">Check-out Date</label>
+            <div class="col-lg-5">
+                <span class="span-date">YYYY-MM-DD</span>
+                <input type="text" class="form-control" id="enddate" name="enddate" placeholder="YYYY-MM-DD"  value="{{ old.enddate}}"/>
+                <!--div class="input-group date" id="checkOut">
+                    <input type="text" class="form-control" name="checkOut" placeholder="MM/DD/YYYY" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div-->
+            </div>
+            {% if errors.enddate %}
+              <span class="help-block">{{ errors.enddate}}</span>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Location</label>
+            <div class="col-lg-4">
+              {% for location in locations %}
+                  <!--pre>
+                      {{ dump(location) }}
+                  </pre-->                
+              {% endfor %} 
+              <select class="form-control" name="location">
+                <option value="">-- Select a Location --</option>
+                {% for location in locations %}                  
+                  <option value="{{ location.__pk }}" {{ (old.location == location.__pk) ? 'selected': ''}} >{{ location.location_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group  {{errors.sleeps ? 'has-error' : ''}}">
+            <label class="col-lg-3 control-label">Sleeps</label>
+            <div class="col-lg-2">
+              <input type="text" class="form-control" name="sleeps" value="{{ old.sleeps}}" />
+            </div>
+            {% if errors.sleeps %}
+              <span class="help-block">{{ errors.sleeps  }}</span>
+            {% endif %}
+          </div>
+          <div class="form-group {{errors.beds ? 'has-error' : ''}}">
+            <label class="col-lg-3 control-label">Bed</label>
+            <div class="col-lg-2">
+              <input type="text" class="form-control" name="beds" value="{{ old.beds}}"/>
+            </div>
+            {% if errors.beds %}
+              <span class="help-block">{{ errors.beds | first }}</span>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">near the beach</label>
+            <div class="col-lg-4">
+              <div class="radio">
+                <label>
+                  <input type="radio" name="near_beach" value="2" {{ (old.near_beach == 2) ? 'checked="checked"': ''}}/> Yes
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="near_beach" value="1" {{ (old.near_beach == 1) ? 'checked="checked"': ''}}/> No
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="near_beach" value="0" {{ ((old.near_beach != 1) and (old.near_beach != 2)) ? 'checked="checked"': ''}}/> Any
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">accepts pets</label>
+            <div class="col-lg-4">
+              <div class="radio">
+                <label>
+                  <input type="radio" name="accepts_pets" value="2" {{ (old.accepts_pets == 2) ? 'checked="checked"': ''}}/> Yes
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="accepts_pets" value="1" {{ (old.accepts_pets == 1) ? 'checked="checked"': ''}}/> No
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="accepts_pets" value="0" {{ ((old.accepts_pets != 1) and (old.accepts_pets != 2)) ? 'checked="checked"': ''}}/> Any
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-9 col-lg-offset-3">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </div>
+        </form>        
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javaScript %}
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    var tomorrow = moment();
+    tomorrow.add(1, 'days');
+    $('#startdate,#enddate').datetimepicker({
+        //useCurrent: false,
+        format: 'YYYY-MM-DD'
+        //minDate: tomorrow
+    });
+    $('#startdate').data('DateTimePicker').minDate(tomorrow);
+    $('#enddate').data('DateTimePicker').minDate(tomorrow.add(1, 'days'));
+    
+    $('#startdate').datetimepicker().on('dp.change', function (e) {
+        var incrementDay = moment(new Date(e.date));
+        incrementDay.add(1, 'days');
+        $('#enddate').data('DateTimePicker').minDate(incrementDay);
+        $(this).data("DateTimePicker").hide();
+    });
+
+    $('#enddate').datetimepicker().on('dp.change', function (e) {
+        var decrementDay = moment(new Date(e.date));
+        decrementDay.subtract(1, 'days');
+        $('#startdate').data('DateTimePicker').maxDate(decrementDay);
+        $(this).data("DateTimePicker").hide();
+    });
+    
+    $('#defaultForm').bootstrapValidator({
+      message: 'This value is not valid',
+      feedbackIcons: {
+          valid: 'glyphicon glyphicon-ok',
+          invalid: 'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+      },
+      fields:{
+        startdate: {
+          validators: {
+            notEmpty: {
+              message: 'The date is required and cannot be empty'
+            },
+            date: {
+              format: 'YYYY-MM-DD'
+            }
+          }
+        },
+        enddate: {
+          validators: {
+            notEmpty: {
+              message: 'The date is required and cannot be empty'
+            },
+            date: {
+              format: 'YYYY-MM-DD'
+            }
+          }
+        },
+        sleeps: {
+          validators: {
+            //digits: {
+            //  message: 'The value can contain only digits'
+            //}
+            lessThan: {
+              value: 10,
+              inclusive: true,
+              message: 'The ages has to be less than or equals to 10'
+            },
+            greaterThan: {
+              value: 0,
+              inclusive: false,
+              message: 'The ages has to be greater than or equals to 1'
+            }
+          }
+        },
+        beds: {
+          validators: {
+            lessThan: {
+              value: 10,
+              inclusive: true,
+              message: 'The ages has to be less than or equals to 10'
+            },
+            greaterThan: {
+              value: 0,
+              inclusive: false,
+              message: 'The ages has to be greater than or equals to 1'
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}    

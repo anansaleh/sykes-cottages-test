@@ -1,0 +1,19 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.container, .jumbotron .container {
+  width: auto;
+  max-width: 900px;
+  padding: 0 15px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}

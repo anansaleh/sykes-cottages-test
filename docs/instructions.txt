@@ -1,0 +1,32 @@
+“We usually advise candidates that they don’t spend more than 60 mins on it.
+
+ 
+
+Please see attached for the details of the technical test, and an SQL dump of the data structure for it.
+
+ 
+
+There are a number of tables. The ones which will be most relevant are
+
+ 
+
+sykes_interview.property
+
+sykes_interview.locations
+
+sykes_interview.bookings
+
+ 
+
+Primary keys are named __pk, and foreign keys are prefixed with _fk_.
+
+For example _fk_property is a foreign key on the property table.
+
+ 
+
+I wouldn’t spend more than an hour on it (but you can spend as little or as long as you like), we don’t expect you to complete it, it is like a Maths exam, where you get marks for showing your working (OOP, TDD). You are free to use a framework or composer if you wish to, but it is not required. You don’t need to produce something pretty, just keep it really simple. And if you adds a couple of tests around it – or even test drives it – even better.
+
+ 
+
+I’d suggest an emphasis on simple but high quality. I’d far rather you did some tests than the availability search, for example. I’m not concerned about the time limit at all – I’d prefer to see something that reflects how you would actually approach the problem rather than the work they’d do under the pressure of a deadline as that doesn’t reflect how we work on a day to day basis.”
+

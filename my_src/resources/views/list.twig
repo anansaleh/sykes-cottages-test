@@ -1,0 +1,52 @@
+{% extends 'templates/template.twig' %}
+
+{% block content %}
+  
+  <h3>{{ title }}</h3> 
+  
+  <a class="btn btn-primary" href="/">New Search</a>
+  
+  <div class="col-lg-10 col-lg-offset-2">
+    <div class="alert alert-success" role="alert">
+      <strong>Search done!</strong> {{pagination.count}} records were found.
+    </div>
+    {% for property in properties %}  
+      <div class="panel panel-default">
+        <div class="panel-heading"><h4>{{ property.property_name }}</h4></div>
+        <div class="panel-body">
+          <h5 class="card-title"><strong>Location: {{ property.location_name }}</strong></h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>sleeps:</strong> {{ property.sleeps }}</li>
+            <li class="list-group-item"><strong>beds:</strong> {{ property.beds }}</li>
+            <li class="list-group-item"><strong>near beach:</strong> {% if property.near_beach%}yes{% else %}No{% endif %}</li>
+            <li class="list-group-item"><strong>accepts pets:</strong> {% if property.accepts_pets%}yes{% else %}No{% endif %}</li>
+          </ul>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% if pagination.needed %}
+  <div class="col-lg-10 col-lg-offset-2">
+    <ul class="pagination">
+      <li class="page-item {% if pagination.page == 1 %}disabled{% endif %}">
+        <a class="page-link" href="/list/1">First</a>
+      </li>
+      <li class="page-item {% if pagination.page == 1 %}disabled{% endif %}">
+        <a class="page-link" href="/list/{{ pagination.page - 1 }}">Previous</a>
+      </li>
+      {% for i in 1..pagination.lastpage %}
+        <li class="page-item {% if i == pagination.page %}active{% endif %}">
+          <a class="page-link" href="/list/{{ i }}">{{ i }} <span class="sr-only">(current)</span></a>
+      {% endfor %}
+      <li class="page-item {% if pagination.page == pagination.lastpage %}disabled{% endif %}">
+        <a class="page-link" href="/list/{{ pagination.page + 1 }}">Next</a>
+      </li>
+      <li class="page-item {% if pagination.page == pagination.lastpage %}disabled{% endif %}">
+        <a class="page-link" href="/list/{{ pagination.lastpage }}">Last</a>
+      </li>
+    </ul>
+  </div>
+  {% endif %}
+{% endblock %}
+
+
